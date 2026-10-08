@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import * as coinRepository from '../repositories/coin.repository';
+import * as cmcService from '../services/coinmarketcap.service';
+import { ExternalApiError } from '../types/errors';
 
 const addCoinSchema = z.object({
   symbol: z.string().min(2).max(10).toUpperCase(), 
@@ -66,6 +68,47 @@ export const deleteCoin = async (req: Request, res: Response) => {
     return res.status(204).send(); 
   } catch (error) {
     console.error('Error deleting coin:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const getCoinPrice = async (req: Request, res: Response) => {
+  try {
+    const symbol = req.params.symbol as string;
+
+    const coin = await coinRepository.getCoinBySymbol(symbol.toUpperCase());
+    if (!coin) {
+      return res.status(404).json({ error: 'Coin is not tracked' });
+    }
+
+    const price = await cmcService.fetchPriceFromCMC(symbol.toUpperCase());
+
+    await coinRepository.addPriceHistory(coin.id, price);
+
+    return res.status(200).json({ symbol: symbol.toUpperCase(), price });
+  } catch (error: any) {
+    console.error('Error getting coin price:', error.message);
+
+    if (error instanceof ExternalApiError) {
+      return res.status(error.statusCode).json({ error: error.message });
+    }
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const getCoinHistory = async (req: Request, res: Response) => {
+  try {
+    const symbol = req.params.symbol as string;
+    
+    const coin = await coinRepository.getCoinBySymbol(symbol.toUpperCase());
+    if (!coin) {
+      return res.status(404).json({ error: 'Coin is not tracked' });
+    }
+
+    const history = await coinRepository.getPriceHistory(coin.id);
+    return res.status(200).json({ symbol: symbol.toUpperCase(), history });
+  } catch (error) {
+    console.error('Error getting coin history:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
