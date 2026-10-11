@@ -2,14 +2,17 @@ import sqlite3 from 'sqlite3';
 import fs from 'fs';
 import path from 'path';
 
-const DB_PATH = path.join(__dirname, '../../database.sqlite');
+const DB_PATH = process.env.NODE_ENV === 'test' 
+  ? ':memory:' 
+  : path.join(__dirname, '../../database.sqlite');
+
 const db = new sqlite3.Database(DB_PATH);
 
 export const dbRun = (sql: string, params: any[] = []): Promise<sqlite3.RunResult> => {
   return new Promise((resolve, reject) => {
     db.run(sql, params, function (err) {
       if (err) reject(err);
-      else resolve(this);
+      else resolve(this); 
     });
   });
 };
@@ -44,7 +47,7 @@ export const dbExec = (sql: string): Promise<void> => {
 export const initDb = async () => {
   try {
     const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf-8');
-    await dbExec(schema); 
+    await dbExec(schema);
     console.log('Database initialized successfully.');
   } catch (error) {
     console.error('Error initializing database:', error);

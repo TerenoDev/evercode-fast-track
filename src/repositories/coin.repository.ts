@@ -26,7 +26,7 @@ export const addPriceHistory = async (coinId: number, price: number) => {
 
 export const getPriceHistory = async (coinId: number): Promise<PriceHistory[]> => {
   return dbAll<PriceHistory>(
-    'SELECT * FROM price_history WHERE coin_id = ? ORDER BY timestamp DESC',
+    'SELECT * FROM price_history WHERE coin_id = ? ORDER BY id DESC',
     [coinId]
   );
 };
