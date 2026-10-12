@@ -7,6 +7,7 @@
     "start": "ts-node src/index.ts",
     "build": "tsc",
     "seed": "ts-node scripts/seed.ts",
+    "export:swagger": "ts-node scripts/export-swagger.ts",
     "test": "cross-env NODE_ENV=test jest",
     "test:watch": "cross-env NODE_ENV=test jest --watch"
   },
