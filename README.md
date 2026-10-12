@@ -29,41 +29,62 @@ Backend-сервис для отслеживания и агрегации ку�
    ```bash
    git clone https://github.com/TerenoDev/evercode-fast-track.git
    cd evercode-fast-track
+   ```
 2. **Установи зависимости:**
    ```bash
    npm install
+   ```
 3. **Создай файл .env в корне проекта:**
    ```bash
    PORT=3000
    CMC_API_KEY=твой_ключ_coinmarketcap
+   ```
 4. **Создай тестовый API-ключ для аутентификации:**
    ```bash
    npx ts-node scripts/seed.ts
+   ```
 5. **Запусти сервер:**
    ```bash
    npm start
+   ```
 6. **Открой Swagger-документацию:**
    ```bash
    http://localhost:3000/api-docs
-   
+   ```
 ### Запуск через Docker
 1. **Убедись, что Docker Desktop запущен.**
 2. **Создай файл .env с ключом CMC_API_KEY (см. выше).**
 3. **Запусти:**
     ```bash
     docker-compose up --build
+    ```
 4. **Открой Swagger-документацию:**
     ```bash
     http://localhost:3000/api-docs
-
+    ```
 ### Тестирование
 1. **Тесты используют базу данных в памяти (:memory:), что изолирует их от рабочей БД. Покрыты все эндпоинты (позитивные и негативные сценарии), обработка ошибок аутентификации, валидации и внешнего API:**
     ```bash
     npm test
+    ```
 ### Аутентификация
 1. **Тестовый ключ: test-api-key-123. Все эндпоинты /api/coins/ требуют заголовок:**
     ```bash
     Authorization: Bearer <API_KEY>
+    ```
+### Примеры запросов
+Добавить монету:
+   ```bash
+   curl -X POST http://localhost:3000/api/coins \
+     -H "Authorization: Bearer test-api-key-123" \
+     -H "Content-Type: application/json" \
+     -d '{"symbol": "BTC"}'
+   ```
+Получить текущую цену:
+   ```bash
+   curl http://localhost:3000/api/coins/BTC/price \
+      -H "Authorization: Bearer test-api-key-123"
+   ```
 ### Фоновые задачи
 Сервис использует TaskScheduler для автоматического обновления цен всех отслеживаемых монет каждые 5 минут. Обновление происходит через CoinMarketCap API, результаты сохраняются в таблицу price_history.
 ### Graceful Shutdown
@@ -104,6 +125,7 @@ Backend-сервис для отслеживания и агрегации ку�
       │       ├── coin.types.ts
       │       └── errors.ts
       └── tsconfig.json
+      ```
 ### Обработка ошибок
 1. **Все входные данные проходят валидацию через Zod.**
 2. **Внешние запросы к CoinMarketCap имеют таймаут 5 секунд и обработку ошибок.**
