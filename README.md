@@ -27,8 +27,8 @@ Backend-сервис для отслеживания и агрегации ку�
 
 1. **Клонируй репозиторий:**
    ```bash
-   git clone https://github.com/TerenoDev/evercode-fast-track.git
-   cd evercode-fast-track
+   git clone https://github.com/TerenoDev/fast-track.git
+   cd fast-track
    ```
 2. **Установи зависимости:**
    ```bash
@@ -94,7 +94,7 @@ Backend-сервис для отслеживания и агрегации ку�
 3. **Закрывает соединение с базой данных SQLite.**
 ### Структура проекта
     ```bash
-      evercode-fast-track
+      fast-track
       ├── Dockerfile
       ├── docker-compose.yml
       ├── jest.config.js
