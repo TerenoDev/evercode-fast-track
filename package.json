@@ -1,5 +1,5 @@
 {
-  "name": "evercode-fast-track",
+  "name": "fast-track",
   "version": "1.0.0",
   "description": "Backend service for tracking crypto prices with CoinMarketCap API",
   "main": "dist/index.js",
